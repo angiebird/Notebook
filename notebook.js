@@ -30,6 +30,8 @@ app.controller('Ctrl', function ($window, $scope, $log){
             $scope.focus = undefined;
         }
         else{
+            if($scope.focus !== undefined)
+                $scope.uploadNote($scope.focus);
             $scope.focus = idx;
         }
     }
@@ -46,6 +48,17 @@ app.controller('Ctrl', function ($window, $scope, $log){
                     $scope.$apply();
                 }
             });
+        }
+    }
+    $scope.uploadNote = function(pos){
+        var db = new AWS.DynamoDB();
+        var table = new AWS.DynamoDB({params: {TableName: 'Note'}});
+        if($scope.noteLs[pos].change == true){
+            var itemParams = {Item: {noteId: {S: String($scope.noteLs[pos].noteId)}, 
+                                     text:   {S: $scope.noteLs[pos].text},
+                                     pos:    {N: String(pos)}}};
+            table.putItem(itemParams, function() {});
+            $scope.noteLs[pos].change == false;
         }
     }
     $scope.download= function(){
@@ -72,9 +85,6 @@ app.controller('Ctrl', function ($window, $scope, $log){
     }
     $scope.upload = function(){
         var db = new AWS.DynamoDB();
-        db.listTables(function(err, data) {
-        console.log(data.TableNames);
-        });
         var table = new AWS.DynamoDB({params: {TableName: 'Note'}});
 
         var cntParams = {Item: {noteId: {S: 'Counter'}, 
