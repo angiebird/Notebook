@@ -24,7 +24,7 @@ app.controller('Ctrl', function ($window, $scope, $log){
             $scope.noteLs[i].change = true;
         }
         $scope.noteCnt += 1;
-        $scope.focus = pos+1;
+        $scope.focus = pos;
     }
     $scope.focusOn = function(idx){
         if($scope.focus == idx){
@@ -57,6 +57,9 @@ app.controller('Ctrl', function ($window, $scope, $log){
             table.putItem(itemParams, function() {});
             $scope.noteLs[pos].change == false;
         }
+        var cntParams = {Item: {noteId: {S: 'Counter'}, 
+                                 cnt:   {N: String($scope.noteCnt)}}};
+        table.putItem(cntParams, function() {});
     }
     $scope.download= function(){
         table.scan({}, function(err, data) {
@@ -78,22 +81,6 @@ app.controller('Ctrl', function ($window, $scope, $log){
           }
         });
     }
-    $scope.upload = function(){
-        var cntParams = {Item: {noteId: {S: 'Counter'}, 
-                                 cnt:   {N: String($scope.noteCnt)}}};
-        table.putItem(cntParams, function() {});
-
-        var noteLs = $scope.noteLs;
-        for(var i = 0; i < noteLs.length; i++){
-            if(noteLs[i].change == true){
-                var itemParams = {Item: {noteId: {S: String(noteLs[i].noteId)}, 
-                                         text:   {S: noteLs[i].text},
-                                         pos:    {N: String(i)}}};
-                table.putItem(itemParams, function() {});
-                noteLs[i].change == false;
-            }
-        }
-    }
     $scope.download();
 });
 
@@ -111,27 +98,5 @@ app.directive("mathjaxBind", function() {
             });
         }]
     };
-});
-app.directive('focusMe', function($timeout, $parse) {
-  return {
-    //scope: true,   // optionally create a child scope
-    link: function(scope, element, attrs) {
-      var model = $parse(attrs.focusMe);
-      scope.$watch(model, function(value) {
-        console.log('value=',value);
-        if(value === true) { 
-          $timeout(function() {
-            element[0].focus(); 
-          });
-        }
-      });
-      // to address @blesh's comment, set attribute value to 'false'
-      // on blur event:
-      element.bind('blur', function() {
-         console.log('blur');
-         scope.$apply(model.assign(scope, false));
-      });
-    }
-  };
 });
 

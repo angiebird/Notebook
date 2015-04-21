@@ -42,7 +42,7 @@
 			<div class="container" ng-repeat="note in noteLs" >
                 <div text-angular ta-toolbar="[['h1','h2','h3','h4','p'],
                                                 ['bold','italics'],
-                                                ['strikeThrough','ul','ol','indent','outdent', 'html']]" 
+                                                ['strikeThrough','ul','ol','indent','outdent', 'justifyLeft', 'justifyCenter', 'justifyRight', 'html']]" 
                                   ng-model="note.text" 
                                   ng-change="note.change=true" 
                                   ng-show="focus == $index" 
@@ -50,6 +50,7 @@
                                   ta-html-editor-class="border-around container">
                 </div>
                 <div text-angular mathjax-bind="note.text" ng-click="focusOn($index)" ng-show="focus != $index" class="border-around container"></div>
+                <br>
 			</div>
 			<br>
 			<div class="container lighter">
