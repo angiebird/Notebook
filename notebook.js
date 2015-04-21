@@ -8,6 +8,7 @@ MathJax.Hub.Configured();
 var app = angular.module('notebook',['textAngular']);
 app.controller('Ctrl', function ($window, $scope, $log){
     //$scope.noteLs = [{noteId: '0', text:"hello yaya"}, {noteId: '1', text:"how are you"}, {noteId: '2', text:"thanks"}];
+    var table = new AWS.DynamoDB({params: {TableName: 'Note'}});
     $scope.noteLs = [];
     $scope.focus = undefined;
     $scope.noteCnt = undefined;
@@ -37,8 +38,6 @@ app.controller('Ctrl', function ($window, $scope, $log){
     }
     $scope.deleteNote = function(){
         if($scope.focus !== undefined){
-            var db = new AWS.DynamoDB();
-            var table = new AWS.DynamoDB({params: {TableName: 'Note'}});
             var pos = $scope.focus;
             table.deleteItem({Key: {noteId:{S: String($scope.noteLs[pos].noteId)}}}, function(err, data) {
                 if (err) console.log(err); // an error occurred
@@ -51,8 +50,6 @@ app.controller('Ctrl', function ($window, $scope, $log){
         }
     }
     $scope.uploadNote = function(pos){
-        var db = new AWS.DynamoDB();
-        var table = new AWS.DynamoDB({params: {TableName: 'Note'}});
         if($scope.noteLs[pos].change == true){
             var itemParams = {Item: {noteId: {S: String($scope.noteLs[pos].noteId)}, 
                                      text:   {S: $scope.noteLs[pos].text},
@@ -62,8 +59,6 @@ app.controller('Ctrl', function ($window, $scope, $log){
         }
     }
     $scope.download= function(){
-        var db = new AWS.DynamoDB();
-        var table = new AWS.DynamoDB({params: {TableName: 'Note'}});
         table.scan({}, function(err, data) {
           if (err) console.log(err, err.stack); // an error occurred
           else{
@@ -84,9 +79,6 @@ app.controller('Ctrl', function ($window, $scope, $log){
         });
     }
     $scope.upload = function(){
-        var db = new AWS.DynamoDB();
-        var table = new AWS.DynamoDB({params: {TableName: 'Note'}});
-
         var cntParams = {Item: {noteId: {S: 'Counter'}, 
                                  cnt:   {N: String($scope.noteCnt)}}};
         table.putItem(cntParams, function() {});
@@ -119,5 +111,27 @@ app.directive("mathjaxBind", function() {
             });
         }]
     };
+});
+app.directive('focusMe', function($timeout, $parse) {
+  return {
+    //scope: true,   // optionally create a child scope
+    link: function(scope, element, attrs) {
+      var model = $parse(attrs.focusMe);
+      scope.$watch(model, function(value) {
+        console.log('value=',value);
+        if(value === true) { 
+          $timeout(function() {
+            element[0].focus(); 
+          });
+        }
+      });
+      // to address @blesh's comment, set attribute value to 'false'
+      // on blur event:
+      element.bind('blur', function() {
+         console.log('blur');
+         scope.$apply(model.assign(scope, false));
+      });
+    }
+  };
 });
 
