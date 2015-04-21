@@ -1,0 +1,50 @@
+<html lang="en" ng-app="notebook">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Angie's NoteBook</title>
+  <meta name="description" content="NoteBook">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,300">
+  <link rel="stylesheet" href="http://textangular.com/css/style.css" type="text/css">
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular.js" type="text/javascript"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/textAngular/1.2.0/textAngular-sanitize.js" type="text/javascript"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/textAngular/1.2.0/textAngular.js" type="text/javascript"></script>
+  <script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+
+
+  <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.23.min.js"></script>
+  <script type="text/javascript">
+    // See the Configuring section to configure credentials in the SDK
+    AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+    IdentityPoolId: "us-east-1:ce945b36-68e3-4d0e-a083-66b496c8eb5f",
+    });
+    // Configure your region
+    AWS.config.region = 'us-east-1';
+   </script>
+
+  <script src="notebook.js"></script>
+</head>
+	<body>
+		<div id="ng-app" ng-app="notebook" ng-controller="Ctrl" class="ng-scope">
+			<div class="container" ng-repeat="note in noteLs track by $index" >
+                <text-angular-toolbar name={{$index}} ng-show="focus == $index"></text-angular-toolbar>
+			</div>
+			<div class="container" ng-repeat="note in noteLs" >
+                <text-angular ng-model="note.text" ng-change="note.change=true" ng-show="focus == $index" ta-target-toolbars={{$index}} ta-text-editor-class="border-around container" ta-html-editor-class="border-around"></text-angular>
+                <text-angular mathjax-bind="note.text" ng-click="focusOn($index)" ng-show="focus != $index" class="border-around container"></text-angular>
+                <br>
+			</div>
+			<br>
+			<div class="container lighter">
+                <button ng-click="addNote()">add</button>
+                <button ng-click="deleteNote()">delete</button>
+                <button ng-click="focusOn(undefined)">preview</button>
+                <button ng-click="upload()">upload</button>
+            </div>
+		</div>
+	</body>
+</html>
+
