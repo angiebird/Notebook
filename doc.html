@@ -1,0 +1,44 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Angie's NoteBook</title>
+  <meta name="description" content="NoteBook">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,300">
+
+  <link rel="stylesheet" href="textAngular.css" type="text/css">
+  <link rel="stylesheet" href="style.css" type="text/css">
+
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.20/angular.min.js" type="text/javascript"></script>
+  <script src="textAngular-rangy.min.js" type="text/javascript"></script>
+  <script src="textAngular-sanitize.min.js" type="text/javascript"></script>
+  <script src="textAngular.min.js" type="text/javascript"></script>
+
+
+  <script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+  <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.23.min.js"></script>
+  <script type="text/javascript">
+    // See the Configuring section to configure credentials in the SDK
+    AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+    IdentityPoolId: "us-east-1:ce945b36-68e3-4d0e-a083-66b496c8eb5f",
+    });
+    // Configure your region
+    AWS.config.region = 'us-east-1';
+   </script>
+
+  <script src="notebook.js"></script>
+  </head>
+  <body>
+    <div ng-app="notebook" ng-controller="docCtrl">
+        <button ng-click="addDoc()">add</button>
+        <div ng-repeat="doc in docLs">
+            <a ng-click="editDoc(doc.docId)">{{doc.title}}</a>
+        </div>
+    </div>
+  </body>
+
+		

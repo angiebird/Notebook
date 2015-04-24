@@ -6,7 +6,22 @@
 MathJax.Hub.Configured();
 
 var app = angular.module('notebook',['textAngular']);
-app.controller('Ctrl', function ($window, $scope, $log){
+
+app.controller('docCtrl', function ($window, $scope, $log){
+    $scope.docLs = [{docId: 0, title:"hello yaya"}, {docId: 1, title:"how are you"}, {docId: 2, title:"thanks"}];
+    $scope.getDocLs = function(){
+    }
+    $scope.addDoc = function(){
+        $scope.docLs.push({docId: 0, title: "Titanic", noteIdLs: []})
+    }
+    $scope.deleteDoc = function(docId){
+    }
+    $scope.editDoc = function(docId){
+        // goto notebook.html
+    }
+});
+
+app.controller('noteCtrl', function ($window, $scope, $log){
     //$scope.noteLs = [{noteId: '0', text:"hello yaya"}, {noteId: '1', text:"how are you"}, {noteId: '2', text:"thanks"}];
     var table = new AWS.DynamoDB({params: {TableName: 'Note'}});
     $scope.noteLs = [];
