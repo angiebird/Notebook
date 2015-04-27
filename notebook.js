@@ -39,7 +39,7 @@ app.config(['$routeProvider',
         controller: 'noteCtrl'
       }).
       otherwise({
-        redirectTo: '/note.html'
+        redirectTo: '/doc.html'
       });
   }]);
 
